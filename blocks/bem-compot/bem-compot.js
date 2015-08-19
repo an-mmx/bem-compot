@@ -39,15 +39,19 @@
         };
 
     function LiveBlockEvents() {
-        if (this instanceof LiveBlockEvents) {
-            if (!LiveBlockEvents.__inst) {
-                this[blockEventsKey] = {};
-            }
+        var inst = LiveBlockEvents.__inst;
 
-            return LiveBlockEvents.__inst || (LiveBlockEvents.__inst = this);
+        if (inst) {
+            return inst;
         }
 
-        return LiveBlockEvents.__inst || new LiveBlockEvents();
+        if (this instanceof LiveBlockEvents) {
+            this[blockEventsKey] = {};
+
+            return inst = LiveBlockEvents.__inst = this;
+        }
+
+        return new LiveBlockEvents();
     }
 
     LiveBlockEvents.prototype = {
@@ -150,14 +154,21 @@
     decls._base = $.inherit(
     /* prototype props */
     {
-
+        /**
+         * Component's block
+         * @type {BEM.DOM}
+         */
         block: null,
 
+        /**
+         * Component id
+         * @type {String}
+         */
         id: null,
 
         /**
          * Block container
-         * @type {BEM.COMPOT|BEM.DOM|jQuery|String}
+         * @type {jQuery|String}
          */
         renderTo: null,
 
@@ -196,16 +207,26 @@
             }
         },
 
+        /**
+         * Init handler
+         * Called during component initialization, before it will be rendered
+         *
+         * @abstract
+         * @param {Object} Component params
+         */
         init: function () {
             console.log(' -> initing ');
         },
 
+        /**
+         * Destructs block
+         */
         destruct: function () {
             if (this._isRedrawing || this._isDestructing) {
                 return;
             }
 
-            this._isDestructing = true;
+            this._isDestructing = 1;
             console.log(' -> destructing ');
             if (this.block) {
                 DOM.destruct(this.block.domElem);
@@ -293,6 +314,7 @@
                 block;
 
             if (view) {
+                // @todo check for nested blocks - they can't be redrew
                 block = this['get' + view.charAt(0).toUpperCase() + view.slice(1)];
                 block = block && block.call(this);
             } else {
@@ -420,10 +442,23 @@
             return view ? this[view + 'Template'] : this.template;
         },
 
+        /**
+         * Converts bemjson to html
+         *
+         * @param {BEMJSON} bemjson
+         * @returns {Vow.promise}
+         */
         _2html: function (bemjson) {
             return BN('i-content').html(bemjson);
         },
 
+        /**
+         * Finds block(s) inside component by given path
+         *
+         * @param {String} path Block selector string
+         * @param {Boolean} [isOne=false] If true, will return only first block
+         * @returns {BEM.DOM|null}
+         */
         _findBlocks: function (path, isOne) {
             var block = this.block,
                 selector,
@@ -455,20 +490,52 @@
 
     /* static props */
     {
+        /**
+         * Get component name
+         *
+         * @static
+         * @returns {String}
+         */
         getName: function () {
             return this._name;
         }
     });
 
 
+    /**
+     * Retrieves component class by name
+     *
+     * @param {String} name Component name
+     * @returns {BEM.COMPOT}
+     */
     BEM.COMPOT = COMPOT = $.extend(function (name) {
         return decls[name];
     },
     {
+        /**
+         * Events controller
+         * Handle block events and delegates them to components
+         *
+         * @type {Function}
+         */
         BlockEvents: LiveBlockEvents,
 
+        /**
+         * Stores component declarations
+         *
+         * @type {Object}
+         */
         components: decls,
 
+        /**
+         * Declare component
+         *
+         * @param {String|Object} decl Component name or declaration
+         * @param {String} decl.name Component name
+         * @param {String[]} [decl.mixins] Component mixins
+         * @param {Object} [protoProps] Prototype properties
+         * @param {Object} [staticProps] Static properties
+         */
         decl: function (decl, protoProps, staticProps) {
             var base, events;
 
@@ -507,6 +574,14 @@
             return decls[decl.name] = $.inherit(base, protoProps, staticProps);
         },
 
+        /**
+         * Creates component
+         *
+         * @param {String} name Component name
+         * @param {Object} params Component params
+         * @param {BEM.DOM} [bemBlock]
+         * @returns {BEM.COMPOT}
+         */
         create: function (name, params, bemBlock) {
             var cmp;
 
@@ -525,6 +600,12 @@
             return cmp;
         },
 
+        /**
+         * Gets inited component by id
+         *
+         * @param {String} id Component id
+         * @returns {BEM.COMPOT}
+         */
         byId: function (id) {
             return COMPOT[storageKey][id];
         },
