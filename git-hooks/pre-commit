@@ -1,0 +1,15 @@
+#!/bin/sh
+
+file_list=$(git diff-index --cached HEAD \
+    | grep -vEe '0{32}\sD' \
+    | grep -Ee '\.js$' | grep -vEe '\.deps.js' | grep -vEe '\.i18n' \
+    | awk '{print $6}')
+
+if [[ ! -z "${file_list}" ]]; then
+    echo "Validate source with jshint .."
+    make $(echo "${file_list}" | sed s/\.js$/.jshint/) || exit $!
+
+    echo "Validate source with jscs .."
+    make $(echo "${file_list}" | sed s/\.js$/.jscs/) || exit $!
+fi
+

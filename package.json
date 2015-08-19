@@ -1,0 +1,36 @@
+{
+    "name": "bem-compot",
+    "version": "0.0.1",
+    "description": "BEM Components",
+    "keywords": [
+        "bem",
+        "components",
+        "bem-node",
+        "compot",
+        "bem.compot",
+        "mixins"
+    ],
+    "author": {
+        "name": "Maxim Didkivskyi",
+        "email": "another.mmx@gmail.com"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/an-mmx/bem-compot.git"
+    },
+    "license": "MIT",
+    "dependencies": {
+        "bem-node": "0.9.10"
+    },
+    "devDependencies": {
+        "enb": "0.13.4",
+        "enb-bemhtml": "0.2.2",
+        "bem-components": "https://github.com/bem/bem-components.git#v1.42.0",
+        "jshint": "2.5.10",
+        "jscs": "1.8.1",
+        "jscs-jsdoc": "0.3.2"
+    },
+    "scripts": {
+        "start": "node app/example/example.server.js --socket ./socket --workers 1"
+    }
+}

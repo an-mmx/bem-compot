@@ -1,0 +1,1 @@
+require('./bem-compot.js');
