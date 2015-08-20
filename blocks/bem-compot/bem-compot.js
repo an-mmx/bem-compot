@@ -547,15 +547,15 @@
             }
 
             base = decls[decl.name];
-            events = base && base.prototype && base.prototype.events || {};
+            events = base && base.prototype.events || {};
             if (decl.mixins) {
                 base = decl.mixins.reduce(function (base, mixin) {
                     if (!decls[mixin]) {
                         throw new Error('Mixin ' + mixin + ' for component ' + decl.name + ' doesn\'t exist');
                     }
                     events = $.extend(true, events, decls[mixin].prototype.events);
-                    return $.inherit(base, decls[mixin].prototype, decls[mixin]);
-                }, base || function () {});
+                    return base ? $.inherit(base, decls[mixin].prototype, decls[mixin]) : decls[mixin];
+                }, base);
             } else {
                 base = base || decls._base;
             }

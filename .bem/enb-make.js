@@ -4,5 +4,7 @@ module.exports = require('../node_modules/bem-node/enb-make')
     .levels([
         'node_modules/bem-controls/common.blocks',
         'node_modules/bem-controls/desktop.blocks',
-        'blocks'
+        'blocks',
+        'blocks.example',
+        'blocks.test'
     ]);

@@ -1,4 +1,5 @@
-# bem-compot
+bem-compot  [![Build Status](https://travis-ci.org/an-mmx/bem-compot.svg?branch=master)](https://travis-ci.org/an-mmx/bem-compot)
+===
 BEM Components
 
 In development ...

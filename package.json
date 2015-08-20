@@ -25,12 +25,17 @@
     "devDependencies": {
         "enb": "0.13.4",
         "enb-bemhtml": "0.2.2",
-        "bem-components": "https://github.com/bem/bem-components.git#v1.42.0",
+        "bem-components": "bem/bem-components#dd65f9611b59f2574347063a25ea6fd291225b42",
         "jshint": "2.5.10",
         "jscs": "1.8.1",
-        "jscs-jsdoc": "0.3.2"
+        "jscs-jsdoc": "0.3.2",
+        "chai": "2.3.0",
+        "mocha": "2.2.5",
+        "mocha-phantomjs": "3.5.3",
+        "phantomjs": "1.9.17"
     },
     "scripts": {
-        "start": "node app/example/example.server.js --socket ./socket --workers 1"
+        "start": "node app/example/example.server.js --socket ./socket --workers 1",
+        "test": "make test"
     }
 }

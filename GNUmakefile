@@ -1,6 +1,7 @@
 JSHINT=./node_modules/.bin/jshint
 JSCS=./node_modules/.bin/jscs
 
+
 .PHONY: all
 all:: git-hooks
 all:: clean
@@ -41,4 +42,16 @@ jscs.last:: $(subst .js,.jscs,$(shell git status -s | grep -Ee '^\s?(M|A|C)' | g
 .PHONY: git-hooks
 git-hooks:
 	@[ -f .git/hooks/pre-commit ] || ln -s ../../git-hooks/pre-commit .git/hooks/pre-commit && true
+
+
+.PHONY: test
+test:: clean
+test:: install
+test:: rebuild
+test::
+	$(shell pkill -f "app/test/test.server.js")
+	node app/test/test.server.js --socket 3000 --workers 1 &
+	sleep 2
+	./node_modules/mocha-phantomjs/bin/mocha-phantomjs http://127.0.0.1:3000/
+	$(shell pkill -f "app/test/test.server.js")
 
